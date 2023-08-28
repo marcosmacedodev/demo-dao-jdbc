@@ -1,16 +1,16 @@
 package daos;
 
-import entities.Department;
-import entities.Seller;
+import daos.impl.DepartmentDaoImpl;
+import daos.impl.SellerDaoImpl;
 
 public class DaoFactory {
 	
-	public static EntityDAO<Department> createDepartamentDAO() {
-		return new DepartmentDAO();
+	public static DepartmentDAO createDepartamentDAO() {
+		return new DepartmentDaoImpl();
 	}
 	
-	public static EntityDAO<Seller> createSellerDAO() {
-		return new SellerDAO();
+	public static SellerDAO createSellerDAO() {
+		return new SellerDaoImpl();
 	}
 
 }
