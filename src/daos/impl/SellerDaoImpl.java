@@ -25,22 +25,71 @@ public class SellerDaoImpl implements SellerDAO{
 	
 	@Override
 	public void insert(Seller entity) {
-		// TODO Auto-generated method stub
-		
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement(
+					"INSERT INTO seller "
+					+"(Name, Email, BirthDate, BaseSalary, DepartmentId) "
+					+"VALUES "
+					+"(?, ?, ?, ?, ?)",
+					Statement.RETURN_GENERATED_KEYS
+					);
+			st.setString(1, entity.getName());
+			st.setString(2, entity.getEmail());
+			st.setDate(3, new java.sql.Date(entity.getBirthDate().getTime()));
+			st.setDouble(4, entity.getBaseSalary());
+			st.setInt(5, entity.getDepartment().getId());
+			
+			int rowsAffected = st.executeUpdate();
+			
+			if(rowsAffected > 0) {
+				ResultSet rs = st.getGeneratedKeys();
+				if(rs.first()) {
+					int id = rs.getInt(1);
+					entity.setId(id);
+				}
+				DB.closeResultSet(rs);
+			}
+		}
+		catch(SQLException ex) {
+			throw new DbException(ex.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+		}
 	}
 
 	@Override
 	public void update(Seller entity) {
-		// TODO Auto-generated method stub
-		
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement(
+					"UPDATE seller SET "
+					+"Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? "
+					+"WHERE Id = ?");
+			st.setString(1, entity.getName());
+			st.setString(2, entity.getEmail());
+			st.setDate(3, new java.sql.Date(entity.getBirthDate().getTime()));
+			st.setDouble(4, entity.getBaseSalary());
+			st.setInt(5, entity.getDepartment().getId());
+			st.setInt(6, entity.getId());
+			
+			int rowsAffected = st.executeUpdate();
+			if(rowsAffected > 0) {
+				//--------------------------//
+			}
+		}
+		catch(SQLException ex) {
+			throw new DbException(ex.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+		}
 	}
 
 	@Override
 	public void deleteById(Integer id) {
-		
 		PreparedStatement st = null;
-		ResultSet rs = null;
-		
 		try {
 			st = conn.prepareStatement(
 					"DELETE FROM seller "
@@ -56,17 +105,14 @@ public class SellerDaoImpl implements SellerDAO{
 			throw new DbException(ex.getMessage());
 		}
 		finally {
-			DB.closeResultSet(rs);
 			DB.closeStatement(st);
 		}
-		
 	}
 
 	@Override
 	public Seller findById(Integer id) {
 		PreparedStatement st = null;
 		ResultSet rs = null;
-		
 		try {
 			st = conn.prepareStatement(
 					"SELECT seller.*, department.Name as DepName "

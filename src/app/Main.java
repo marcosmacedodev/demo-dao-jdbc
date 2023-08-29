@@ -1,5 +1,7 @@
 package app;
 
+import java.util.List;
+
 import daos.DaoFactory;
 import daos.SellerDAO;
 import db.DB;
@@ -12,9 +14,9 @@ public class Main {
 		
 		SellerDAO sellerDAO = DaoFactory.createSellerDAO();
 		
-		Seller seller = sellerDAO.findById(3);
-		
-		System.out.println(seller);
+		List<Seller> sellers = sellerDAO.findAll();
+		for(Seller seller : sellers)
+			System.out.println(seller);
 		
 		DB.closeConnection();
 
