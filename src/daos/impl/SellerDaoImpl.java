@@ -26,6 +26,7 @@ public class SellerDaoImpl implements SellerDAO{
 	@Override
 	public void insert(Seller entity) {
 		PreparedStatement st = null;
+		
 		try {
 			st = conn.prepareStatement(
 					"INSERT INTO seller "
