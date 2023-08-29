@@ -7,7 +7,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import daos.SellerDAO;
 import db.DB;
@@ -26,7 +28,6 @@ public class SellerDaoImpl implements SellerDAO{
 	@Override
 	public void insert(Seller entity) {
 		PreparedStatement st = null;
-		
 		try {
 			st = conn.prepareStatement(
 					"INSERT INTO seller "
@@ -94,8 +95,7 @@ public class SellerDaoImpl implements SellerDAO{
 		try {
 			st = conn.prepareStatement(
 					"DELETE FROM seller "
-					+"WHERE Id = ?"
-					);
+					+"WHERE Id = ?");
 			st.setInt(1, id);
 			int rowsAffected = st.executeUpdate();	
 			if(rowsAffected > 0) {
@@ -146,7 +146,6 @@ public class SellerDaoImpl implements SellerDAO{
 	public List<Seller> findAll() {
 		Statement st = null;
 		ResultSet rs = null;
-		
 		try {
 			st = conn.createStatement();
 			rs = st.executeQuery(					
@@ -155,19 +154,19 @@ public class SellerDaoImpl implements SellerDAO{
 					+"ON seller.DepartmentId = department.Id "
 					+"ORDER BY Name");
 			List<Seller> sellers = new ArrayList<Seller>();
-			Department department = null;
+			Map<Integer, Department> department = new HashMap<>();
 			while(rs.next()) {
 				Integer id = rs.getInt("Id");
 				String name = rs.getString("Name");
 				String email = rs.getString("Email");
 				Date birthDate = rs.getDate("BirthDate");
 				Double baseSalary = rs.getDouble("BaseSalary");
-				if(department == null) {
+				if(department.get(rs.getInt("DepartmentId")) == null) {
 					String depName = rs.getString("DepName");
 					Integer departmentId = rs.getInt("DepartmentId");
-					department = new Department(departmentId, depName);
+					department.put(departmentId, new Department(departmentId, depName));
 				}
-				Seller seller = new Seller(id, name, email, birthDate, baseSalary, department);
+				Seller seller = new Seller(id, name, email, birthDate, baseSalary, department.get(rs.getInt("DepartmentId")));
 				sellers.add(seller);
 			}
 			return sellers;
@@ -185,15 +184,13 @@ public class SellerDaoImpl implements SellerDAO{
 	public List<Seller> findByDepartment(Department department) {
 		PreparedStatement st = null;
 		ResultSet rs = null;
-		
 		try {
 			st = conn.prepareStatement(
 					"SELECT seller.*, department.Name as DepName "
 					+"FROM seller INNER JOIN department "
 					+"ON seller.DepartmentId = department.Id "
 					+"WHERE DepartmentId = ? "
-					+"ORDER BY Name"
-					);
+					+"ORDER BY Name");
 			st.setInt(1, department.getId());
 			rs = st.executeQuery();
 			List<Seller> sellers = new ArrayList<Seller>();
@@ -218,5 +215,4 @@ public class SellerDaoImpl implements SellerDAO{
 			DB.closeStatement(st);
 		}
 	}
-
 }
