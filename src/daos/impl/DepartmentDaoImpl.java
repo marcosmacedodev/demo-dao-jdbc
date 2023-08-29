@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,14 +23,51 @@ public class DepartmentDaoImpl implements DepartmentDAO{
 	
 	@Override
 	public void insert(Department entity) {
-		// TODO Auto-generated method stub
-		
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement(
+					"INSERT INTO department (Name) "
+					+"VALUES "
+					+"(?)",
+					Statement.RETURN_GENERATED_KEYS
+					);
+			st.setString(1, entity.getName());
+			int rowsAffected = st.executeUpdate();
+			if(rowsAffected > 0) {
+				ResultSet rs = st.getGeneratedKeys();
+				if(rs.first()) {
+					Integer id = rs.getInt(1);
+					entity.setId(id);
+				}
+				DB.closeResultSet(rs);
+			}
+		}
+		catch(SQLException ex) {
+			throw new DbException(ex.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+		}
 	}
 
 	@Override
 	public void update(Department entity) {
-		// TODO Auto-generated method stub
-		
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement(
+					"UPDATE department "
+					+"SET Name = ? "
+					+"WHERE Id = ?");
+			st.setString(1, entity.getName());
+			st.setInt(2, entity.getId());
+			st.executeUpdate();
+		}
+		catch(SQLException ex) {
+			throw new DbException(ex.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+		}
 	}
 
 	@Override
