@@ -1,25 +1,23 @@
 package app;
 
-import java.util.Date;
 import java.util.List;
 
 import daos.DaoFactory;
-import daos.SellerDAO;
+import daos.DepartmentDAO;
 import db.DB;
 import entities.Department;
-import entities.Seller;
 
 public class Main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		SellerDAO sellerDAO = DaoFactory.createSellerDAO();
+		DepartmentDAO departmentDAO = DaoFactory.createDepartamentDAO();
 		System.out.println("--------------FindAll----------------");
 		System.out.println();
-		List<Seller> sellers = sellerDAO.findAll();
-		for(Seller seller : sellers)
-			System.out.println(seller);
+		List<Department> deps = departmentDAO.findAll();
+		for(Department dep : deps)
+			System.out.println(dep);
 		
 //		System.out.println("--------------Insert----------------");
 //		System.out.println();

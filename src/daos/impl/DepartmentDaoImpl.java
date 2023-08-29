@@ -73,14 +73,12 @@ public class DepartmentDaoImpl implements DepartmentDAO{
 	@Override
 	public void deleteById(Integer id) {
 		PreparedStatement st = null;
-		
 		try {
 			st = conn.prepareStatement(
 					"DELETE FROM department "
 					+"WHERE Id = ?"
 					);
 			st.setInt(1, id);
-			
 			st.executeUpdate();
 		}
 		catch(SQLException ex) {
@@ -95,7 +93,6 @@ public class DepartmentDaoImpl implements DepartmentDAO{
 	public Department findById(Integer id) {
 		PreparedStatement st = null;
 		ResultSet rs = null;
-		
 		try {
 			st = conn.prepareStatement(
 					"SELECT * FROM department "
@@ -121,10 +118,9 @@ public class DepartmentDaoImpl implements DepartmentDAO{
 	public List<Department> findAll() {
 		PreparedStatement st = null;
 		ResultSet rs = null;
-		
 		try {
 			st = conn.prepareStatement(
-					"SELECT * FROM department"
+					"SELECT * FROM department "
 					+"ORDER BY Name");
 			rs = st.executeQuery();
 			List<Department> deps = new ArrayList<>();
@@ -133,7 +129,7 @@ public class DepartmentDaoImpl implements DepartmentDAO{
 				String name = rs.getString("Name");
 				deps.add(new Department(id, name));
 			}
-			return null;
+			return deps;
 		}
 		catch(SQLException ex) {
 			throw new DbException(ex.getMessage());
@@ -143,5 +139,4 @@ public class DepartmentDaoImpl implements DepartmentDAO{
 			DB.closeStatement(st);
 		}
 	}
-
 }
