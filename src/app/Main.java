@@ -30,7 +30,7 @@ public class Main {
 //		newSeller.setBaseSalary(1000.0);
 //		newSeller.setDepartment(new Department(2, null));
 //		
-//		sellerDAO.insert(newSeller);
+//		sellerDAO.deleteById(8);
 //		
 //		System.out.println(newSeller);
 		
